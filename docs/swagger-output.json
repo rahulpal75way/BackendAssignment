@@ -1,0 +1,1186 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Job Board API",
+    "description": "API documentation for the Job Board application",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8000",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Type: `Bearer <your-token>`"
+    }
+  },
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register a new user",
+        "description": "Create a new user with name, email, password, role, and confirmPassword",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User registration data",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password",
+                "confirmPassword",
+                "name",
+                "role"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "admin75@test.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "admin987"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "admin987"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Admin Kumar 2"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["ADMIN", "USER", "CANDIDATE"],
+                  "example": "ADMIN"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User registered successfully"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "80744d2b-c1a0-4351-8915-af4562ed7a1e"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Admin Kumar 2"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "admin75@test.com"
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "ADMIN"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "example": "invalid_type"
+                      },
+                      "expected": {
+                        "type": "string",
+                        "example": "string"
+                      },
+                      "received": {
+                        "type": "string",
+                        "example": "undefined"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["confirmPassword"]
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Required"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login a user",
+        "description": "Authenticate user with email and password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User login credentials",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["email", "password"],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "admin75@test.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "admin987"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Login successful"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "tokens": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "80744d2b-c1a0-4351-8915-af4562ed7a1e"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Admin Kumar 2"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "admin75@test.com"
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "role": {
+                          "type": "string",
+                          "example": "ADMIN"
+                        },
+                        "provider": {
+                          "type": "string",
+                          "example": "manual"
+                        }
+                      }
+                    },
+                    "walletBalance": {
+                      "type": "number",
+                      "example": 0
+                    },
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["ADMIN", "USER", "CANDIDATE"]
+                          }
+                        }
+                      }
+                    },
+                    "txns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "example": []
+                    },
+                    "pendingDeposits": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "example": []
+                    },
+                    "pendingWithdrawals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "example": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error_code": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid email or password"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/refresh-token": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Refresh access and refresh tokens",
+        "description": "Generate new access and refresh tokens using a valid refresh token",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Refresh token request body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["refreshToken"],
+              "properties": {
+                "refreshToken": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refresh successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Token refreshed successfully"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "tokens": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "9349a390-b9e7-408f-897c-7cd6a06d844d"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "admin@test21.com"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "rahul"
+                        },
+                        "role": {
+                          "type": "string",
+                          "example": "CANDIDATE"
+                        },
+                        "provider": {
+                          "type": "string",
+                          "example": "manual"
+                        },
+                        "active": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "blocked": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error_code": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Refresh token is invalid or expired"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error_code": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Something went wrong"
+                },
+                "data": {
+                  "type": "object",
+                  "example": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/create": {
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "Create a withdrawal transaction",
+        "description": "Initiate a withdrawal by providing userId, amount, type and action as 'withdrawal'. Requires Bearer token.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Withdrawal transaction details",
+            "schema": {
+              "type": "object",
+              "required": ["userId", "amount", "type", "action"],
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "9349a390-b9e7-408f-897c-7cd6a06d844d"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 3000
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "local", "intl"],
+                  "example": "withdrawal"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "transfer"],
+                  "example": "withdrawal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Withdrawal transaction created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "1bc8dd6f-4e78-4f2a-a6e4-0ad410000011"
+                },
+                "referenceId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "f7bb84cc-9343-4b50-b2ff-ccb94c4ec988"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 3000
+                },
+                "type": {
+                  "type": "string",
+                  "example": "withdrawal"
+                },
+                "action": {
+                  "type": "string",
+                  "example": "withdrawal"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "pending"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-07-09T12:10:00.000Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-07-09T12:10:00.000Z"
+                },
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "9349a390-b9e7-408f-897c-7cd6a06d844d"
+                },
+                "receiverId": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": null
+                },
+                "walletDepositId": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": null
+                },
+                "walletWithdrawalId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "fa70ddfa-6f6f-4e38-bcb7-6b1c6f02d5d7"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token expired or invalid",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error_code": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Token expired"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "TOKEN_EXPIRED"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/user/{userId}": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get transactions by user ID",
+        "description": "Fetches all transactions where the given user is either the sender or the receiver.",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the user",
+            "type": "string",
+            "format": "uuid",
+            "example": "53bd1d12-404b-48f1-9146-9ea37e977ed6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of transactions for the user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "format": "uuid" },
+                  "referenceId": { "type": "string", "format": "uuid" },
+                  "amount": { "type": "number" },
+                  "type": {
+                    "type": "string",
+                    "enum": ["deposit", "withdrawal", "local", "intl"]
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": ["deposit", "withdrawal", "transfer"]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "approved", "rejected"]
+                  },
+                  "createdAt": { "type": "string", "format": "date-time" },
+                  "updatedAt": { "type": "string", "format": "date-time" },
+                  "userId": { "type": "string", "format": "uuid" },
+                  "receiverId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "walletDepositId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "walletWithdrawalId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "name": { "type": "string" },
+                      "email": { "type": "string" }
+                    }
+                  },
+                  "receiver": {
+                    "type": ["object", "null"],
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "name": { "type": "string" },
+                      "email": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/approve/{transactionId}": {
+      "patch": {
+        "tags": ["Transactions"],
+        "summary": "Approve a transaction",
+        "description": "Approves a transaction by its ID. Requires admin role and authentication.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the transaction to approve",
+            "type": "string",
+            "format": "uuid",
+            "example": "d7657148-9e19-404e-8781-680981db8a49"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction approved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "referenceId": { "type": "string", "format": "uuid" },
+                "amount": { "type": "number" },
+                "type": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "local", "intl"]
+                },
+                "action": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "transfer"]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "approved", "rejected"],
+                  "example": "approved"
+                },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "updatedAt": { "type": "string", "format": "date-time" },
+                "userId": { "type": "string", "format": "uuid" },
+                "receiverId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "walletDepositId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "walletWithdrawalId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token expired",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Token expired" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "TOKEN_EXPIRED" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/reject/{transactionId}": {
+      "patch": {
+        "tags": ["Transactions"],
+        "summary": "Reject a transaction",
+        "description": "Rejects a transaction by its ID. Requires admin role and authentication.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "required": true,
+            "description": "UUID of the transaction to reject",
+            "type": "string",
+            "format": "uuid",
+            "example": "eb74bcab-07fc-4064-b94a-46243a187537"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction rejected successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "referenceId": { "type": "string", "format": "uuid" },
+                "amount": { "type": "number" },
+                "type": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "local", "intl"]
+                },
+                "action": {
+                  "type": "string",
+                  "enum": ["deposit", "withdrawal", "transfer"]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "approved", "rejected"],
+                  "example": "rejected"
+                },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "updatedAt": { "type": "string", "format": "date-time" },
+                "userId": { "type": "string", "format": "uuid" },
+                "receiverId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "walletDepositId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "walletWithdrawalId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token expired",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Token expired" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "TOKEN_EXPIRED" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/transfer": {
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "Initiate a user-to-user transfer",
+        "description": "Transfers funds from one user to another. Requires Bearer authentication.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Transfer details",
+            "schema": {
+              "type": "object",
+              "required": ["userId", "receiverId", "amount", "type", "action"],
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "f078cdce-944c-44b7-87a0-4616984e47e4"
+                },
+                "receiverId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4af09491-c0e5-4463-a85b-5f3f8c04bfc6"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 1000
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["local", "intl"],
+                  "example": "local"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": ["transfer"],
+                  "example": "transfer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "referenceId": { "type": "string", "format": "uuid" },
+                "amount": { "type": "number" },
+                "type": { "type": "string", "example": "local" },
+                "action": { "type": "string", "example": "transfer" },
+                "status": { "type": "string", "example": "pending" },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "updatedAt": { "type": "string", "format": "date-time" },
+                "userId": { "type": "string", "format": "uuid" },
+                "receiverId": { "type": "string", "format": "uuid" },
+                "walletDepositId": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "uuid"
+                },
+                "walletWithdrawalId": {
+                  "type": "string",
+                  "nullable": true,
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token expired",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Token expired" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "TOKEN_EXPIRED" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/admin/all": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get all transactions for admin",
+        "description": "Returns a list of all transactions including deposit, withdrawal, and transfers. Only accessible to ADMIN users.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all transactions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "format": "uuid" },
+                  "referenceId": { "type": "string", "format": "uuid" },
+                  "amount": { "type": "number" },
+                  "type": {
+                    "type": "string",
+                    "enum": ["deposit", "withdrawal", "local", "intl"]
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": ["deposit", "withdrawal", "transfer"]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "approved", "rejected"]
+                  },
+                  "createdAt": { "type": "string", "format": "date-time" },
+                  "updatedAt": { "type": "string", "format": "date-time" },
+                  "userId": { "type": "string", "format": "uuid" },
+                  "receiverId": {
+                    "type": ["string", "null"],
+                    "format": "uuid"
+                  },
+                  "walletDepositId": {
+                    "type": ["string", "null"],
+                    "format": "uuid"
+                  },
+                  "walletWithdrawalId": {
+                    "type": ["string", "null"],
+                    "format": "uuid"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "email": { "type": "string", "format": "email" }
+                    }
+                  },
+                  "receiver": {
+                    "type": ["object", "null"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "email": { "type": "string", "format": "email" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Token expired" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "TOKEN_EXPIRED" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/commissions": {
+      "get": {
+        "tags": ["Commissions"],
+        "summary": "Get all commissions (admin only)",
+        "description": "Returns all commissions with corresponding approved transaction details. Requires ADMIN access.",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Commission list fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": true },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "txnId": { "type": "string", "format": "uuid" },
+                      "amount": { "type": "number" },
+                      "type": {
+                        "type": "string",
+                        "enum": ["deposit", "transfer"]
+                      },
+                      "createdAt": { "type": "string", "format": "date-time" },
+                      "updatedAt": { "type": "string", "format": "date-time" },
+                      "txn": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "referenceId": { "type": "string", "format": "uuid" },
+                          "amount": { "type": "number" },
+                          "type": {
+                            "type": "string",
+                            "enum": ["deposit", "withdrawal", "local", "intl"]
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": ["deposit", "withdrawal", "transfer"]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["approved", "rejected", "pending"]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "userId": { "type": "string", "format": "uuid" },
+                          "receiverId": {
+                            "type": ["string", "null"],
+                            "format": "uuid"
+                          },
+                          "walletDepositId": {
+                            "type": ["string", "null"],
+                            "format": "uuid"
+                          },
+                          "walletWithdrawalId": {
+                            "type": ["string", "null"],
+                            "format": "uuid"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Token expired" },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "example": "TOKEN_EXPIRED" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

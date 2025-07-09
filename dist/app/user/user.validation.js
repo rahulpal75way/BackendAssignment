@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateSocialLogin = exports.validateRefreshToken = exports.validateEditUser = exports.validateUpdateUser = exports.validateCreateUser = exports.validateForgotPassword = exports.validateVerifyEmail = exports.validateChangePassword = exports.validateVerifyInvitation = exports.validateLogin = void 0;
+const validate_helper_1 = require("../common/helper/validate.helper");
+const user_schema_1 = require("./user.schema");
+exports.validateLogin = (0, validate_helper_1.validate)(user_schema_1.loginSchema);
+exports.validateVerifyInvitation = (0, validate_helper_1.validate)(user_schema_1.verifyInvitationSchema);
+exports.validateChangePassword = (0, validate_helper_1.validate)(user_schema_1.changePasswordSchema);
+exports.validateVerifyEmail = (0, validate_helper_1.validate)(user_schema_1.verifyEmailSchema);
+exports.validateForgotPassword = (0, validate_helper_1.validate)(user_schema_1.forgotPasswordSchema);
+exports.validateCreateUser = (0, validate_helper_1.validate)(user_schema_1.createUserSchema);
+exports.validateUpdateUser = (0, validate_helper_1.validate)(user_schema_1.updateUserSchema);
+exports.validateEditUser = (0, validate_helper_1.validate)(user_schema_1.editUserSchema);
+exports.validateRefreshToken = (0, validate_helper_1.validate)(user_schema_1.refreshTokenSchema);
+const validateSocialLogin = (field) => (0, validate_helper_1.validate)((0, user_schema_1.socialLoginSchema)(field));
+exports.validateSocialLogin = validateSocialLogin;
